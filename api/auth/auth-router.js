@@ -3,14 +3,11 @@ const Auth = require("./auth-model");
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const { JWT_SECRET } = require("../../secrets/index")
-const { validateBody, uniqueUsername, usernameExists } = require("../middleware/auth-middleware/auth")
+const { validateRegister, validateLogin, uniqueUsername, usernameExists, usernameValid } = require("../middleware/auth-middleware/auth")
 
-router.post('/register', validateBody, uniqueUsername, (req, res, next) => {
-  const { username, password} = req.body;
-  const hash = bcrypt.hashSync(password, 8);
+router.post('/register', validateRegister, uniqueUsername, (req, res, next) => {
 
-  
-  Auth.createUser({ username, password: hash })
+  Auth.createUser({ username: req.body.username, password: req.hash})
     .then( newUser => {
       res.status(201).json(newUser)
     })
@@ -43,7 +40,7 @@ router.post('/register', validateBody, uniqueUsername, (req, res, next) => {
   */
 });
 
-router.post('/login', validateBody, usernameExists,  (req, res, next) => {
+router.post('/login', usernameValid, validateLogin,  (req, res, next) => {
   if (bcrypt.compareSync(req.body.password, req.storedUser.password)) {
     const token = generateToken(req.storedUser)
     res.json({ message: `welcome, ${req.storedUser.username}`, token })
