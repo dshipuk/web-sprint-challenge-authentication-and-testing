@@ -47,7 +47,7 @@ async function usernameValid(req, res, next) {
         req.storedUser = checkIfExists
         next()
     } else {
-        res.status(400).json({ message: "invalid credentials" })
+        res.status(404).json({ message: "invalid credentials" })
     }
 }
 
@@ -55,7 +55,7 @@ function validateLogin(req, res, next) {
     const { username, password } = req.body
 
     if (!username || !username.trim() || !password) {
-        res.status(400).json({ message: "username and password required" })
+        res.status(404).json({ message: "username and password required" })
     } else {
         next()
     }
