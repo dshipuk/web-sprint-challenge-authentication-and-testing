@@ -1,11 +1,18 @@
 const router = require('express').Router();
 const Auth = require("./auth-model");
+const bcrypt = require("bcryptjs")
+const { validateRegisterBody, uniqueUsername } = require("../middleware/auth-middleware/auth")
 
-router.post('/register', (req, res) => {
-  Auth.createUser(req.body)
+router.post('/register', validateRegisterBody, uniqueUsername, (req, res, next) => {
+  const { username, password} = req.body;
+  const hash = bcrypt.hashSync(password, 8);
+  
+  
+  Auth.createUser({ username, password: hash })
     .then( newUser => {
       res.status(201).json(newUser)
     })
+    .catch(next)
   //res.end('implement register, please!');
   /*
     IMPLEMENT
