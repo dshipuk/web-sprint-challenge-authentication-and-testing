@@ -36,8 +36,10 @@ async function usernameExists(req, res, next) {
     }
 }
 
+
+
 module.exports = {
     validateBody,
     uniqueUsername,
-    usernameExists
+    usernameExists,
 }

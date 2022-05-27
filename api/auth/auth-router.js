@@ -48,7 +48,7 @@ router.post('/login', validateBody, usernameExists,  (req, res, next) => {
     const token = generateToken(req.storedUser)
     res.json({ message: `welcome, ${req.storedUser.username}`, token })
   } else {
-    res.json("password no match")
+    res.status(400).json({ message: "invalid credentials" })
   }
   //res.end('implement login, please!');
   /*
