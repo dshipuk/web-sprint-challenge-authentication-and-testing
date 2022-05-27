@@ -40,7 +40,7 @@ router.post('/register', validateRegister, uniqueUsername, (req, res, next) => {
   */
 });
 
-router.post('/login', usernameValid, validateLogin,  (req, res) => {
+router.post('/login', validateLogin, usernameValid,  (req, res) => {
   if (bcrypt.compareSync(req.body.password, req.storedUser.password)) {
     const token = generateToken(req.storedUser)
     res.json({ message: `welcome, ${req.storedUser.username}`, token })
