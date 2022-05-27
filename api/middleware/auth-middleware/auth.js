@@ -1,7 +1,7 @@
 const Auth = require("../../auth/auth-model")
 const db = require("../../../data/dbConfig")
 
-function validateRegisterBody(req, res, next) {
+function validateBody(req, res, next) {
     const { username, password } = req.body
 
     if(!username || !username.trim() || !password) {
@@ -23,7 +23,21 @@ async function uniqueUsername(req, res, next) {
     }
 }
 
+async function usernameExists(req, res, next) {
+    const { username } = req.body
+
+    const checkIfExists= await db("users").where("username", username).first()
+    
+    if (checkIfExists) {
+        req.storedUser = checkIfExists
+        next()
+    } else {
+        res.status(400).json({ message: "username and password required" })
+    }
+}
+
 module.exports = {
-    validateRegisterBody,
-    uniqueUsername
+    validateBody,
+    uniqueUsername,
+    usernameExists
 }
